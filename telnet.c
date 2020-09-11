@@ -52,15 +52,20 @@ static int start(TelnetClient *client) {
    fd_set savedset, set;
    int err, result;
    int sockfd;
+   sigset_t sigset;
    sockfd = telnet_get_sockfd(client);
 
    FD_ZERO(&savedset);
    FD_SET(sockfd, &savedset);
    FD_SET(STDIN_FILENO, &savedset);
+   
+   if (setup_signals(&sigset) < 0) {
+      return -1;
+   }
 
    while (1) {
       set = savedset;
-      err = pselect(sockfd + 1, &set, NULL, NULL, NULL, NULL);
+      err = pselect(sockfd + 1, &set, NULL, NULL, NULL, &sigset);
       if (err < 0 && errno == EINTR) {
 	 if (handle_sigs(client) < 0) {
 	    return -1;
@@ -233,7 +238,7 @@ static int handle_in(TelnetClient *client) {
 	    break;
 	 }
       }
-      telnet_send(client, buff + i, 1);
+      telnet_send(client, (unsigned char *)(buff + i), 1);
    }
    return ret;
 }

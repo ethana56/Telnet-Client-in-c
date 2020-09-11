@@ -199,10 +199,10 @@ int telnet_create_connection(TelnetClient *client, char *addr, char *port) {
    if (sockfd < 0) {
       return -1;
    }
-   /*if (set_nonblock(sockfd) < 0) {
+   if (set_nonblock(sockfd) < 0) {
       close(sockfd);
       return -1;
-   }*/
+   }
    client->sockfd = sockfd;
    return 0;
 }
@@ -241,8 +241,7 @@ static int flush_send_buffer(int fd, struct send_buf *buf_data) {
 
 int telnet_send(TelnetClient *client, unsigned char *buf, size_t n) {
    unsigned char intern_buf[10];
-   size_t i, result;
-   int ret = 0;
+   size_t i;
    struct send_buf buf_data;
 
    buf_data.len = 0;
@@ -392,7 +391,6 @@ static int send_sb_with_meta(int fd, struct opt_handler *handler, unsigned char 
 
 static int execute_sb_start(TelnetClient *client, struct opt_handler *opt_handler) {
    unsigned char *result;
-   struct byte_buffer *end_result;
    sbresult_l length;
    int ret = 0;
    result = opt_handler->sb_handler_start(opt_handler->sb_args, &length);
@@ -513,7 +511,7 @@ static int process_iac_state(TelnetClient *client, unsigned char cmd) {
 static int cpy_bytes(TelnetClient *client, unsigned char *intern_buf, 
 		size_t amt, unsigned char *extern_buf, size_t *cpylen) {
    size_t i, amt_cpy;
-   int do_iac_ret, ret = 0;
+   int ret = 0;
    for (amt_cpy = 0, i = 0; i < amt; ++i) {
       if (client->adj_iac_state && intern_buf[i] == IAC) {
          extern_buf[amt_cpy++] = intern_buf[i];

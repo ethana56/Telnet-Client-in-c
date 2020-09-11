@@ -156,6 +156,7 @@ struct opt_handler *new_naws_opt_handler(void(*sig_handler)(int)) {
    handler->opt_args = (void *)callback;
    handler->args_free = naws_args_free;
    handler->optcode = TELOPT_NAWS;
+   return handler;
 }
 
 static int termtype_opt_handler(unsigned char cmd, void *args, int *do_sb) {

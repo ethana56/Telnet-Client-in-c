@@ -72,17 +72,6 @@ int tty_reset(terminal_state *state) {
 }
 
 int tty_reset_last_state(terminal_state *state) {
-      fprintf(stderr, "ECHO: %d\n", state->last_termios.c_lflag & ECHO);
-   struct termios buf;
-   if (tcsetattr(state->fd, TCSAFLUSH, &state->last_termios) < 0) {
-      return -1;
-   }
-   tcgetattr(state->fd, &buf);
-   fprintf(stderr, "ECHO: %d\n", buf.c_lflag & ECHO);
-   return 0;
-}
-
-/*int tty_reset_last_state(terminal_state *state) {
    struct termios last_termios = state->last_termios;
    if (tty_reset(state) < 0) {
       return -1;
@@ -91,7 +80,7 @@ int tty_reset_last_state(terminal_state *state) {
       return -1;
    }
    return 0; 
-}*/
+}
 
 int register_tty(int fd, terminal_state *state) {
    if (tcgetattr(fd, &(state->original_termios)) < 0) {
