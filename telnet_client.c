@@ -115,9 +115,32 @@ struct opt_handler *opt_handler_new(void) {
    return handler;
 }
 
-void cleanup_handlers(TelnetClient *client) {
-  
-} 
+static void free_opt_handler(struct opt_handler *handler) {
+   if (handler->args_free != NULL) {
+      handler->args_free(handler->opt_args, handler->sb_args);
+   }
+   free(handler);
+}
+
+static void cleanup_handlers(TelnetClient *client) {
+   size_t i;
+   for (i = 0; i < client->handlers_size; ++i) {
+      if (client->handlers[i] != &default_opt_handler) {
+	 free_opt_handler(client->handlers[i]);
+      }
+   }
+   free(client->handlers);
+}
+
+static void cleanup_cmd_data(struct cmd_data *cmd_data) {
+   free(cmd_data->sb_buf);
+}
+
+void telnet_free(TelnetClient *client) {
+   cleanup_handlers(client);
+   cleanup_cmd_data(&client->cmd_data);
+   free(client);
+}
 
 static void set_handler_array(struct opt_handler **handlers, int size) {
    int i;

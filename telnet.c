@@ -116,11 +116,12 @@ void start_telnet(char *addr, char *port) {
    }
    if (start(client) < 0) {
       goto err;
-   } 
+   }
+   telnet_free(client); 
    return;
 
 err:
-   cleanup_handlers(client);
+   telnet_free(client);
    perror(NULL);
    exit(EXIT_FAILURE);
 }
@@ -165,7 +166,7 @@ static int do_environ_command(char *args) {
    size_t arg1_len = strcspn(args, " ");
    if (arg1_len == 0) {
       printf("missing arguments for environ\n");
-      return 0;
+      return ret;
    }
    args[arg1_len] = '\0';
    if (strcmp(args, "list") == 0) {

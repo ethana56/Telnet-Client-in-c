@@ -26,7 +26,9 @@ static void free_env_var(struct env_var *env_var) {
 
 static void free_list(void) {
    struct env_var *cur;
-   for (cur = head; cur; cur = cur->next) {
+   struct env_var *next;
+   for (cur = head; cur; cur = next) {
+      next = cur->next;
       free_env_var(cur);
    }
 }
@@ -56,6 +58,7 @@ static struct env_var *make_env_var(char *oenv) {
       goto err;
    }
    strcpy(env_var->value, value);
+   free(env_cpy);
    return env_var;
 
 err:
@@ -118,6 +121,7 @@ char *get_env(char *env) {
    char *ret = NULL;
    if (head == NULL) {
       if (init_env() < 0) return NULL;
+      if (atexit(free_list) < 0) return NULL;
    }
    env_var = search_env_var(env);
    if (env_var != NULL) {

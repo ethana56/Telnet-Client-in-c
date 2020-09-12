@@ -43,6 +43,6 @@ int telnet_get_sockfd(TelnetClient *);
 int telnet_start_sb(TelnetClient *, unsigned char);
 int telnet_send(TelnetClient *,  unsigned char *, size_t);
 int telnet_receive(TelnetClient *, unsigned char *, size_t, size_t *);
-void cleanup_handlers(TelnetClient *);
+void telnet_free(TelnetClient *);
 
 #endif
