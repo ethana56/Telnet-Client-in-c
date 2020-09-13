@@ -139,6 +139,7 @@ static void cleanup_cmd_data(struct cmd_data *cmd_data) {
 void telnet_free(TelnetClient *client) {
    cleanup_handlers(client);
    cleanup_cmd_data(&client->cmd_data);
+   close(client->sockfd);
    free(client);
 }
 
@@ -573,8 +574,9 @@ int telnet_receive(TelnetClient *client, unsigned char *extern_buf, size_t exter
          ret = -1;
 	 break;
       }
-      if (amt_read == 0) {
+      if (amt_read == 0) { 
          ret = 0;
+	 break;
       }
       total_read += amt_read;
       if (cpy_bytes(client, intern_buf, amt_read, extern_buf + total_cpy, &amt_cpy) < 0) {

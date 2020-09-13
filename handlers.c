@@ -215,6 +215,36 @@ struct opt_handler *new_termtype_opt_handler(void) {
    return handler;
 }
 
+static int bintrans_opt_handler(unsigned char cmd, void *args, int *do_sb) {
+   int ret;
+   *do_sb = 0;
+   switch (cmd) {
+      case WILL:
+	      ret = DO;
+	      break;
+      case DO:
+	      ret = WILL;
+	      break;
+      case DONT:
+	      ret = WONT;
+	      break;
+      case WONT:
+	      ret = DONT;
+	      break;
+   }
+   return ret;
+}
+
+struct opt_handler *new_bintrans_opt_handler(void) {
+   struct opt_handler *handler = opt_handler_new();
+   if (handler == NULL) {
+      return NULL;
+   }
+   handler->opt_handler = bintrans_opt_handler;
+   handler->optcode = TELOPT_BINTRANS;
+   return handler;
+}
+
 
 
 

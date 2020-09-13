@@ -16,6 +16,7 @@ size_t safe_write(int fd, const unsigned char *buf, size_t amt) {
    return written;
 }
 
+/* THIS NEEDS TO BE REWRITTED TO WORK WITH NON_BLOCKING IO */
 ssize_t safe_read(int fd, unsigned char *buf, size_t amt) {
    ssize_t ret;
    size_t readn = 0;

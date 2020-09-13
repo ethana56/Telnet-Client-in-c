@@ -16,4 +16,5 @@
 struct opt_handler *new_echo_opt_handler(terminal_state *);
 struct opt_handler *new_naws_opt_handler(void(*)(int));
 struct opt_handler *new_termtype_opt_handler(void);
+struct opt_handler *new_bintrans_opt_handler(void);
 #endif

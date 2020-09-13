@@ -137,6 +137,9 @@ static int handle_client(TelnetClient *client) {
    if (!result) {
       return 0;
    }
+   if (result == 0) {
+      return 0;
+   }
    if (amt == 0) {
       return 1;
    }
@@ -244,8 +247,19 @@ static int handle_in(TelnetClient *client) {
    return ret;
 }
 
+
+
 static int register_negotiations(TelnetClient *client) {
    struct opt_handler *handler;
+   /* register bintrans handler */
+   handler = new_bintrans_opt_handler();
+   if (handler == NULL) {
+      return -1;
+   }
+   if (telnet_reg_opt_handler(client, handler) < 0) {
+      return -1;
+   }
+
    /*register echo handler*/
    if (terminal_state_set) {
       handler = new_echo_opt_handler(&term_state);
