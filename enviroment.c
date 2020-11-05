@@ -32,7 +32,7 @@ static void free_list(void) {
       free_env_var(cur);
    }
 }
-
+// hey uhh ethan can you buy me some chocolate ice cream bars? I'm hungry
 static struct env_var *make_env_var(char *oenv) {
    struct env_var *env_var;
    char *env_cpy, *env, *value;
